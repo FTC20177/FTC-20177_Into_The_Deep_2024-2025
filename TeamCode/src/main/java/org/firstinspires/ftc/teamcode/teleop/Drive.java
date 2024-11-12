@@ -60,7 +60,6 @@ public class Drive extends LinearOpMode {
         telemetry.update();
 
 
-        Pivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         frontleftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontrightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -72,10 +71,14 @@ public class Drive extends LinearOpMode {
         //claw.setPosition(0);
         waitForStart();
         // run until the end of the match (driver presses STOP)
-
+        Pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Pivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         while (opModeIsActive()) {
+
             telemetry.addData("Status", "Running");
+            telemetry.addData("Encoder", Pivot.getCurrentPosition());
+            telemetry.update();
 
             frontleftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             frontrightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -83,7 +86,6 @@ public class Drive extends LinearOpMode {
             backrightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-            telemetry.update();
 
             //setMotorPower
             double r = Math.hypot(-gamepad1.left_stick_x, gamepad1.left_stick_y);
@@ -108,16 +110,6 @@ public class Drive extends LinearOpMode {
             tgtPower = this.gamepad1.right_trigger;
             Slide.setPower(tgtPower);
 
-            if (gamepad1.right_bumper) {
-                Pivot.setPower(-tgtPower_piv);
-            } else if (gamepad1.left_bumper) {
-                Pivot.setPower(tgtPower_piv);
-            }else{
-                Pivot.setPower(0);
-                double pos = Pivot.getCurrentPosition();
-                Pivot.setTargetPosition((int)pos);
-                Pivot.setPower(.25);
-            }
 
             if (gamepad1.x) {
                 Intake.setPower(1);

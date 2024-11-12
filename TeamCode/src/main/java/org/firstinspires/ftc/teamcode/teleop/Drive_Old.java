@@ -36,10 +36,10 @@ public class Drive_Old extends LinearOpMode {
     private DcMotor Slide;
     private DcMotor Pivot;
     private CRServo Intake;
-    private Servo Bucket;
+    private CRServo Bucket;
 
     double tgtPower = 0;
-    double tgtPower_piv = 0;
+    double tgtPower_piv = 0.5;
 
     @Override
     public void runOpMode() {
@@ -52,15 +52,13 @@ public class Drive_Old extends LinearOpMode {
         Slide = hardwareMap.get(DcMotor.class, "Slide");
         Pivot = hardwareMap.get(DcMotor.class, "Pivot");
         Intake = hardwareMap.get(CRServo.class, "Intake");
-        Bucket = hardwareMap.get(Servo.class, "Bucket");
+        Bucket = hardwareMap.get(CRServo.class, "Bucket");
 
 
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-
-        Pivot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         frontleftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontrightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -87,16 +85,16 @@ public class Drive_Old extends LinearOpMode {
 
             //setMotorPower
             double r = Math.hypot(-gamepad1.left_stick_x, gamepad1.left_stick_y);
-            double robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI / 4;
+            double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
             //these had 'final' before them at one point "final double v1 = r * Math.cos(robotangle) + rightx"
             //-Team 15036
 
 
-            double rightx = gamepad1.right_stick_x * .25;
-            double v1 = (r * Math.cos(robotAngle)) * .45 - rightx;
-            double v2 = (r * Math.sin(robotAngle)) * .45 + rightx;
-            double v3 = (r * Math.sin(robotAngle)) * .45 - rightx;
-            double v4 = (r * Math.cos(robotAngle)) * .45 + rightx;
+            double rightx = gamepad1.right_stick_x * .5;
+            double v1 = (r * Math.cos(robotAngle)) * 1 - rightx;
+            double v2 = (r * Math.sin(robotAngle)) * 1 + rightx;
+            double v3 = (r * Math.sin(robotAngle)) * 1 - rightx;
+            double v4 = (r * Math.cos(robotAngle)) * 1 + rightx;
             frontleftMotor.setPower(v1);
             frontrightMotor.setPower(-v2);
             backleftMotor.setPower(v3);
@@ -120,12 +118,16 @@ public class Drive_Old extends LinearOpMode {
                 Intake.setPower(1);
             } else if (gamepad1.y) {
                 Intake.setPower(-1);
+            }else{
+                Intake.setPower(0);
             }
 
             if (gamepad1.dpad_up) {
-                Bucket.setPosition(0);
+                Bucket.setPower(0.5);
             } else if (gamepad1.dpad_down) {
-                Bucket.setPosition(180);
+                Bucket.setPower(-0.5);
+            }else{
+                Bucket.setPower(0);
             }
 
 

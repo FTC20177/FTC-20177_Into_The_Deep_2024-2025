@@ -23,6 +23,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.teamcode.Presets;
 
 @TeleOp
 
@@ -36,10 +37,14 @@ public class Drive_Old extends LinearOpMode {
     private DcMotor Slide;
     private DcMotor Pivot;
     private CRServo Intake;
-    private CRServo Bucket;
+    private Servo Bucket;
 
     double tgtPower = 0;
     double tgtPower_piv = 0.5;
+
+    int kPivStartingPosition = Presets.kPivStartingPosition;
+    int kPivMidPosition = Presets.kPivMidPosition;
+    int kPivEndPosition = Presets.kPivEndPosition;
 
     @Override
     public void runOpMode() {
@@ -52,7 +57,7 @@ public class Drive_Old extends LinearOpMode {
         Slide = hardwareMap.get(DcMotor.class, "Slide");
         Pivot = hardwareMap.get(DcMotor.class, "Pivot");
         Intake = hardwareMap.get(CRServo.class, "Intake");
-        Bucket = hardwareMap.get(CRServo.class, "Bucket");
+        Bucket = hardwareMap.get(Servo.class, "Bucket");
 
 
 
@@ -70,10 +75,20 @@ public class Drive_Old extends LinearOpMode {
         //claw.setPosition(0);
         waitForStart();
         // run until the end of the match (driver presses STOP)
+        Pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Pivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Pivot.setTargetPosition(0);
+
+        Slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         while (opModeIsActive()) {
+            Pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             telemetry.addData("Status", "Running");
+            telemetry.addData("Piv_Pos", Pivot.getCurrentPosition());
+            telemetry.addData("Slide_Pos", Slide.getCurrentPosition());
 
             frontleftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             frontrightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -107,11 +122,14 @@ public class Drive_Old extends LinearOpMode {
             Slide.setPower(tgtPower);
 
             if (gamepad1.right_bumper) {
-                Pivot.setPower(-tgtPower_piv);
-            } else if (gamepad1.left_bumper) {
-                Pivot.setPower(tgtPower_piv);
-            }else{
-                Pivot.setPower(0);
+                Pivot.setTargetPosition(kPivStartingPosition);
+                Pivot.setPower(0.25);
+            } else if (gamepad1.dpad_left) {
+                Pivot.setTargetPosition(kPivMidPosition);
+                Pivot.setPower(0.25);
+            }else if (gamepad1.left_bumper) {
+                Pivot.setTargetPosition(kPivEndPosition);
+                Pivot.setPower(0.25);
             }
 
             if (gamepad1.x) {
@@ -123,11 +141,9 @@ public class Drive_Old extends LinearOpMode {
             }
 
             if (gamepad1.dpad_up) {
-                Bucket.setPower(0.5);
+                Bucket.setPosition(.80);
             } else if (gamepad1.dpad_down) {
-                Bucket.setPower(-0.5);
-            }else{
-                Bucket.setPower(0);
+                Bucket.setPosition(.50);
             }
 
 

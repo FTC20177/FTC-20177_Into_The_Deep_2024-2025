@@ -16,18 +16,18 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FO
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode.auto;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Presets;
 
-@TeleOp
+@Autonomous
 
-public class Drive extends LinearOpMode {
+public class Auto extends LinearOpMode {
 
     //private Blinker control_Hub;
     private DcMotor backleftMotor;
@@ -98,65 +98,19 @@ public class Drive extends LinearOpMode {
 
             telemetry.update();
 
-            //setMotorPower
-            double r = Math.hypot(-gamepad1.left_stick_x, gamepad1.left_stick_y);
-            double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
-            //these had 'final' before them at one point "final double v1 = r * Math.cos(robotangle) + rightx"
-            //-Team 15036
+            frontleftMotor.setPower(-0.25);
+            frontrightMotor.setPower(0.25);
+            backleftMotor.setPower(-0.25);
+            backrightMotor.setPower(0.25);
 
+            sleep(1000);
 
-            double rightx = gamepad1.right_stick_x * .5;
-            double v1 = (r * Math.cos(robotAngle)) * 1 - rightx;
-            double v2 = (r * Math.sin(robotAngle)) * 1 + rightx;
-            double v3 = (r * Math.sin(robotAngle)) * 1 - rightx;
-            double v4 = (r * Math.cos(robotAngle)) * 1 + rightx;
-            frontleftMotor.setPower(v1);
-            frontrightMotor.setPower(-v2);
-            backleftMotor.setPower(v3);
-            backrightMotor.setPower(-v4);
+            frontleftMotor.setPower(0);
+            frontrightMotor.setPower(0);
+            backleftMotor.setPower(0);
+            backrightMotor.setPower(0);
 
-            tgtPower = this.gamepad1.left_trigger;
-            Slide.setPower(-tgtPower);
-            tgtPower = this.gamepad1.right_trigger;
-            Slide.setPower(tgtPower);
-
-            if (gamepad1.right_bumper) {
-                Pivot.setTargetPosition(kPivStartingPosition);
-                Pivot.setPower(0.25);
-            } else if (gamepad1.dpad_left) {
-                Pivot.setTargetPosition(kPivMidPosition);
-                Pivot.setPower(0.25);
-            }else if (gamepad1.dpad_right) {
-                Pivot.setTargetPosition(kPivLowPosition);
-                Pivot.setPower(0.25);
-            }else if (gamepad1.left_bumper) {
-                Pivot.setTargetPosition(kPivEndPosition);
-                Pivot.setPower(0.25);
-            }
-
-            if (gamepad1.x) {
-                Intake.setPower(1);
-            } else if (gamepad1.y) {
-                Intake.setPower(-1);
-            }else{
-                Intake.setPower(0);
-            }
-
-            if (gamepad1.dpad_up) {
-                Bucket.setPosition(.80);
-            } else if (gamepad1.dpad_down) {
-                Bucket.setPosition(.50);
-            }
-
-
-            if (isStopRequested()){
-                frontleftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                frontrightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                backleftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                backrightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                sleep(1000);
-            }
-
+            stop();
         }
     }
 }

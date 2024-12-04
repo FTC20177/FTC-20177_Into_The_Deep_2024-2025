@@ -22,7 +22,6 @@
 package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -40,7 +39,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Disabled
+@Autonomous
 //Change the @Disabled to @Autonomous above
 
 public class April_Tags extends LinearOpMode {
@@ -98,7 +97,7 @@ public class April_Tags extends LinearOpMode {
             @Override
             public void onOpened()
             {
-                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(1920,1080, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
